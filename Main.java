@@ -72,6 +72,10 @@ public class Main {
                     }                        
                     break;
                     // 4- Calcular caminho mínimo entre duas cidades
+                    // Solicita o código da cidade de origem e o código da cidade de destino
+                    // Obtem os vértices destes códigos (verifica se existe)
+                    // Caso existam, chamar o método de calcular caminho mínimo, passando os dois vértices como parâmetros
+                    // O método é executado sobre o grafo original, lido do arquivo
                     case 4:
                         System.out.println("Informe o código da cidade de origem: ");
                         codOrigem = Leitor.getLeitor().nextInt();
@@ -80,12 +84,17 @@ public class Main {
                         origem = verificaSeCidadeExiste(codOrigem);
                         destino = verificaSeCidadeExiste(codDestino);
                         if(origem != null && destino != null){
-                            grafo.calcularCaminhoMinimo_v2(origem, destino);
+                            grafo.calcularCaminhoMinimo(origem, destino);
                         }else{
                             System.out.println("A cidade informada não existe.");
                         }                        
                         break;
                     // 5- Calcular caminho mínimo entre duas cidades considerando apenas a AGM
+                    // Solicita o código da cidade de origem e o código da cidade de destino
+                    // Obtem os vértices destes códigos (verifica se existe)
+                    // Caso existam, calcula a AGM antes de chamar o algoritmo de caminho mínimo
+                    // Chamar o método de calcular caminho mínimo, passando os dois vértices como parâmetros
+                    // O método é executado sobre o grafo resultante do cálculo de AGM
                     case 5:
                         System.out.println("Informe o código da cidade de origem: ");
                         codOrigem = Leitor.getLeitor().nextInt();
@@ -94,7 +103,12 @@ public class Main {
                         origem = verificaSeCidadeExiste(codOrigem);
                         destino = verificaSeCidadeExiste(codDestino);
                         if(origem != null && destino != null){
-                            grafo.calcularCaminhoMinimo_v2(origem, destino);
+                            grafoNovo = grafo.gerarArvoreGeradoraMinima(origem);
+                            if(grafoNovo == null){
+                                System.out.println("A origem não está no grafo.");
+                            } else {
+                                grafoNovo.calcularCaminhoMinimo(origem, destino);
+                            }
                         }else{
                             System.out.println("A cidade informada não existe.");
                         }                        

@@ -231,6 +231,91 @@ public class Grafo<T>{
         return cloneGrafo;
     }
 
-    
+    // Um predecessor de um determinado vértice é qualquer vértice que tenha uma aresta direcionada para esse vértice
+    // Se existe uma aresta direcionada do vértice A para o vértice B, então o vértice A é um predecessor do vértice B.
+    private void imprimePredecessor(No<Vertice<T>> no, boolean primeiraChamada){
+        if(no.getPredecessor() != null){
+            imprimePredecessor(no.getPredecessor(), false);
+        }
+        Vertice<T> vert = no.getValor();
+        // Imprime, neste caso, a cidade
+        System.out.println(vert.getValor());
+        if(primeiraChamada){
+            System.out.println("Distancia total: " + no.getDistancia());
+        }
+    }
+
+    // Método para calcular o caminho mínimo
+    // Usa endereço de objetos
+    // Recebe como parâmetros dois vértices e imprime na tela o caminho mínimo entre eles e a distância total entre os dois
+    public void calcularCaminhoMinimo(T origem, T destino){
+        // imprimir na tela o caminho minimo da origem para o destino e a distancia total entre os dois
+        // Obter todos os vertices para ligar a distancia e o predececor a um vertice
+        ArrayList<No<Vertice<T>>> nos = new ArrayList<No<Vertice<T>>>();
+        // Povoa a lista de nós com todos os Vertices do grafo de cidades
+        No<Vertice<T>> noOrigem = null, noDestino = null;
+        for(Vertice<T> vertice: vertices){
+            if(vertice.getValor().equals(origem)){
+                // Marcar quem é o primeiro
+                noOrigem = new No<Vertice<T>>(vertice, true);
+                nos.add(noOrigem);
+            } else if(vertice.getValor().equals(destino)){
+                noDestino = new No<Vertice<T>>(vertice, false);
+                nos.add(noDestino);
+            } else {
+                nos.add(new No<Vertice<T>>(vertice, false));
+            }
+        }
+        ArrayList<No<Vertice<T>>> rotulados = new ArrayList<No<Vertice<T>>>();
+        No<Vertice<T>> noAtual = noOrigem;
+        while(this.vertices.size() < rotulados.size() || !rotulados.contains(noDestino)){
+            // Adiciona o no atual a lista de rotulados
+            rotulados.add(noAtual);
+            // Pega distancia do no atual
+            float distanciaNoAtual = noAtual.getDistancia();
+            // Pega aresta que liga aos nós de destino
+            for(Aresta<T> aresta : noAtual.getValor().getDestinos()){
+                // Percorre cada vertice vizinho (Destino, nós adjacentes)
+                Vertice<T> vert = aresta.getDestino();
+                // Obtem o index do nó de destino
+                No<Vertice<T>> noDestinoDoNoAtual = null;
+                // Obtem o nó de destino do nó atual
+                for(No<Vertice<T>> noDestinoDoAtual: nos){
+                    if(noDestinoDoAtual.getValor().equals(vert)){
+                        noDestinoDoNoAtual = noDestinoDoAtual;
+                        break;
+                    }
+                }
+                // Obtem a possível nova distância para o nó de destino
+                float novaDistancia = distanciaNoAtual + aresta.getPeso();
+                // verifica se a distância atual para o nó de destino é maior que a nova distância
+                // Se for troca distância e o predecessor
+                if(noDestinoDoNoAtual.getDistancia() > novaDistancia){
+                    noDestinoDoNoAtual.setDistancia(novaDistancia);
+                    noDestinoDoNoAtual.setPredecessor(noAtual);
+                }
+            }
+            No<Vertice<T>> noDeMenorDistancia = null;
+            // Encontra o nó de menor distância que não foi rotulado
+            for(No<Vertice<T>> no: nos){
+                if(!rotulados.contains(no)){
+                    // Se nenhum objeto tiver sido atribuído à variável 'noDeMenorDistancia' quer dizer que ainda não existe nenhum
+                    // nó de menor distância, logo podemos atribir o nó atual para tal
+                    if(noDeMenorDistancia == null){
+                        noDeMenorDistancia = no;
+                    } else {
+                        if(no.getDistancia() == No.INFINITO){
+                            continue;
+                        }
+                        if(noDeMenorDistancia.getDistancia() > no.getDistancia()){
+                            noDeMenorDistancia = no;
+                        }
+                    }
+                }
+            }
+            noAtual = noDeMenorDistancia;
+        }
+        imprimePredecessor(noDestino, true);
+    }
 
 }
