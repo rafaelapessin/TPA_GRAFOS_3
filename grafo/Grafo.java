@@ -231,6 +231,7 @@ public class Grafo<T>{
         return cloneGrafo;
     }
 
+    // Método para imprimir o predecessor
     // Um predecessor de um determinado vértice é qualquer vértice que tenha uma aresta direcionada para esse vértice
     // Se existe uma aresta direcionada do vértice A para o vértice B, então o vértice A é um predecessor do vértice B.
     private void imprimePredecessor(No<Vertice<T>> no, boolean primeiraChamada){
@@ -315,6 +316,7 @@ public class Grafo<T>{
             }
             noAtual = noDeMenorDistancia;
         }
+        // imprimer o predecessor
         imprimePredecessor(noDestino, true);
     }
 
